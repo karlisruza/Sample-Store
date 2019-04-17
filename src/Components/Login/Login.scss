@@ -1,0 +1,15 @@
+.form_row{
+    display: flex;
+    margin-top: 14%;
+    align-items: center;
+    justify-content: center;
+    #form{
+        width:50%;
+    }
+    .submit_btn{
+        position:absolute;
+        left:50%;
+        margin-left: -50px;
+        width:100px;
+    }
+}     
