@@ -2,8 +2,42 @@ import React from 'react';
 import { Form, FormGroup, Label, Input, Button, Row } from 'reactstrap';
 import s from './Login.scss';
 
+require('isomorphic-fetch');
+
 class Login extends React.Component{
+
+    componentWillMount(){
+
+    }
+
     render(){
+
+        //FETCH TEST!
+        // const query = `{
+        //     user{
+        //       user_id
+        //       username
+        //       email
+        //       pass
+        //     }
+        //   }`;
+
+        // fetch('http://localhost:8080/graphql', {
+        //     method: "POST",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify({
+        //       query: query,
+        //     }),
+        //   })
+        // .then(res => {
+        //     res.json();
+        // })
+        // .catch(err => console.log(err))
+        // .then(res => {
+        //     console.log(res.data);
+        // })
+        // .catch(err => console.log(err));
+
         return(
                 <Row className='form_row'>
                     <Form id='form'>
