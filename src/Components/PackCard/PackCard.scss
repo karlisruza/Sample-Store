@@ -1,0 +1,13 @@
+.pack__grid{
+    display:flex-grid;
+    justify-content:center;
+    height:100%;
+}
+.pack__card{
+    position:relative;
+    background-color:cornflowerblue;
+    margin-top:20px;
+    float:left;
+    width:27%;
+    height: 27%;
+}
