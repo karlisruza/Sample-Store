@@ -5,6 +5,10 @@ import Home from './Home/Home.js';
 import NotFound from './NotFound/NotFound.js';
 import Register from './Register/Register.js';
 import Packs from './Packs/Packs.js';
+import Pack from './Pack/Pack.js';
+import CreatePack from './CreatePack/CreatePack.js'
+import Profile from './Profile/Profile.js';
+import Admin from './Admin/Admin.js';
 
 const Routes = props => {
     return (
@@ -12,6 +16,10 @@ const Routes = props => {
         <Route path="/" component={Home} exact />
         <Route path="/register" component={Register}/>
         <Route path="/packs" component={Packs} />
+        <Route path="/pack" component={Pack} />
+        <Route path="/createpack" component={CreatePack} />
+        <Route path="/user" component={Profile} />
+        <Route path="/admin" component={Admin} />
         {/* <Route component={NotFound} /> */}
     </BrowserRouter>
     );

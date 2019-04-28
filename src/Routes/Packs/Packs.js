@@ -13,12 +13,12 @@ class Packs extends React.Component{
                 <Container>
                     <Searchbar />
                     <PackCardGrid>
-                        <PackCard />
-                        <PackCard />
-                        <PackCard />
-                        <PackCard />
-                        <PackCard />
-                        <PackCard />
+                        <PackCard img='https://upload.wikimedia.org/wikipedia/en/thumb/2/2d/Love_Streams_%28Front_Cover%29.png/220px-Love_Streams_%28Front_Cover%29.png' />
+                        <PackCard img='https://upload.wikimedia.org/wikipedia/en/thumb/2/2d/Love_Streams_%28Front_Cover%29.png/220px-Love_Streams_%28Front_Cover%29.png' />
+                        <PackCard img='https://upload.wikimedia.org/wikipedia/en/thumb/2/2d/Love_Streams_%28Front_Cover%29.png/220px-Love_Streams_%28Front_Cover%29.png' />
+                        <PackCard img='https://upload.wikimedia.org/wikipedia/en/thumb/2/2d/Love_Streams_%28Front_Cover%29.png/220px-Love_Streams_%28Front_Cover%29.png' />
+                        <PackCard img='https://upload.wikimedia.org/wikipedia/en/thumb/2/2d/Love_Streams_%28Front_Cover%29.png/220px-Love_Streams_%28Front_Cover%29.png' />
+                        <PackCard img='https://upload.wikimedia.org/wikipedia/en/thumb/2/2d/Love_Streams_%28Front_Cover%29.png/220px-Love_Streams_%28Front_Cover%29.png' />
                     </PackCardGrid>
                 </Container>
             </Layout>

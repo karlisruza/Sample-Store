@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'semantic-ui/dist/semantic.min.css';
 
 import * as serviceWorker from './serviceWorker';
 import Routes from './Routes'
