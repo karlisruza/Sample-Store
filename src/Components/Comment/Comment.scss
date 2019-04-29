@@ -1,0 +1,28 @@
+.comment{
+    border:solid;
+    float:left;
+    width:100%;
+}
+.comment__content{
+   float:right;
+   width:70%;
+}
+.left__side{
+    width:20%;
+    height:100%;
+    display:inline-block;
+}
+.created__at{
+    margin-top:50%;
+}
+.title{
+    max-width: 60%;
+}
+.rating{
+    margin-left:20px;
+}
+.body{
+    text-indent: 0%;
+    padding-left:0px;
+    margin-left:0px;
+}
