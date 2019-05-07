@@ -25,14 +25,24 @@ app.use(
     })
 );
 //GraphQL
-app.use('/graphql', cors(), bodyParser.json(), expressGraphQL((req) => {
-  return {
-    schema,
-    context: {
-      user: req.user
-    }
-  };
-}));
+// app.use('/graphql', cors(), bodyParser.json(), expressGraphQL((req) => {
+//   return {
+//     schema,
+//     context: {
+//       user: req.user
+//     }
+//   };
+// }));
+
+var graphqlHTTP = require("express-graphql");
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema: schema,
+    rootValue: global,
+    graphiql: true
+  })
+);
 
 
 app.listen(process.env.PORT || 8080, () => {

@@ -75,3 +75,11 @@ CREATE TABLE IF NOT EXISTS comments (
     pack_id UUID REFERENCES packs(pack_id) NOT NULL,
     created_on TIMESTAMP NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS downloads (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(user_id) NOT NULL,
+    pack_id UUID REFERENCES packs(pack_id),
+    sample_id UUID REFERENCES samples(sample_id) NOT NULL
+);
+
