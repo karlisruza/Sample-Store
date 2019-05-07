@@ -5,11 +5,6 @@ import s from './Login.scss';
 require('isomorphic-fetch');
 
 class Login extends React.Component{
-
-    componentWillMount(){
-
-    }
-
     render(){
 
         //FETCH TEST!

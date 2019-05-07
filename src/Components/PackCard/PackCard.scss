@@ -1,0 +1,47 @@
+.pack__grid{
+    display:flex-grid;
+    justify-content:center;
+    height:100%;
+}
+.pack__card{
+    position:relative;
+    background-color:cornflowerblue;
+    margin-top:20px;
+    margin-right:10%;
+    float:left;
+    width:auto;
+    height: auto;
+}
+.pack__card:hover .overlay {
+    opacity: 1;
+}
+
+.overlay{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: .5s ease;
+    background:rgba(40,40,40, 0.8);
+}
+.pack__title{
+    color:white;
+}
+.icon__color{
+    color:white;
+}
+.circular{
+    color:white;
+}
+.to__pack{
+    background: rgba(40, 40, 40, 0.4);
+    color:white;
+    position:absolute;
+    width:100%;
+    height:3.5em;
+    bottom:0px;
+}

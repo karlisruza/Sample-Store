@@ -9,7 +9,7 @@ class Layout extends Component{
             <div className='frame'>
                 <Header />
                     {this.props.children}
-                <Footer />
+                {/* <Footer /> */}
             </div>
         );
     }

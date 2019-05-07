@@ -1,0 +1,77 @@
+-- CREATE TABLE table_name (
+--  column_name TYPE column_constraint,
+--  table_constraint table_constraint
+-- ) INHERITS existing_table_name;
+
+CREATE TABLE IF NOT EXISTS users (
+    user_id UUID PRIMARY KEY,
+    username VARCHAR (255) UNIQUE NOT NULL,
+    password VARCHAR (255) NOT NULL,
+    email VARCHAR (255) UNIQUE NOT NULL,
+    name VARCHAR (255) NOT NULL,
+    coins INTEGER NOT NULL DEFAULT 0,
+    img_path VARCHAR (255),
+    created_on TIMESTAMP NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS packs (
+    pack_id UUID PRIMARY KEY,
+    name VARCHAR (255) UNIQUE NOT NULL,
+    user_id UUID REFERENCES users(user_id),
+    price INTEGER NOT NULL,
+    community BOOLEAN NOT NULL,
+    created_on TIMESTAMP NOT NULL,
+    demo_path VARCHAR (255) NOT NULL,
+    img_path VARCHAR (255)
+);
+
+CREATE TABLE IF NOT EXISTS samples (
+    sample_id UUID PRIMARY KEY,
+    name VARCHAR (255) UNIQUE NOT NULL,
+    user_id UUID REFERENCES users(user_id),
+    price INTEGER NOT NULL,
+    created_on TIMESTAMP NOT NULL,
+    sample_path VARCHAR (255) UNIQUE NOT NULL,
+    key VARCHAR (255),
+    bpm INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS packSamples (
+    id UUID PRIMARY KEY,
+    sample_id UUID REFERENCES samples(sample_id) NOT NULL,
+    pack_id UUID REFERENCES packs(pack_id) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS likes (
+    like_id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(user_id),
+    sample_id UUID REFERENCES samples(sample_id),
+    pack_id UUID REFERENCES packs(pack_id)
+);
+
+CREATE TABLE IF NOT EXISTS tags (
+    tag_id UUID PRIMARY KEY,
+    name VARCHAR (255) UNIQUE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS sampleTags (
+    id UUID PRIMARY KEY,
+    sample_id UUID REFERENCES samples(sample_id) NOT NULL,
+    tag_id UUID REFERENCES tags(tag_id)
+);
+
+CREATE TABLE IF NOT EXISTS packTags (
+    id UUID PRIMARY KEY,
+    pack_id UUID REFERENCES packs(pack_id) NOT NULL,
+    tag_id UUID REFERENCES tags(tag_id)
+);
+
+CREATE TABLE IF NOT EXISTS comments (
+    comment_id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(user_id),
+    title VARCHAR (255) NOT NULL,
+    body VARCHAR (255) NOT NULL,
+    rating INTEGER NOT NULL,
+    pack_id UUID REFERENCES packs(pack_id) NOT NULL,
+    created_on TIMESTAMP NOT NULL
+);
