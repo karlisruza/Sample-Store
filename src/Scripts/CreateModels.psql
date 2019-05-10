@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS samples (
     bpm INTEGER
 );
 
-CREATE TABLE IF NOT EXISTS packSamples (
+CREATE TABLE IF NOT EXISTS packsamples (
     id UUID PRIMARY KEY,
     sample_id UUID REFERENCES samples(sample_id) NOT NULL,
     pack_id UUID REFERENCES packs(pack_id) NOT NULL
@@ -54,13 +54,13 @@ CREATE TABLE IF NOT EXISTS tags (
     name VARCHAR (255) UNIQUE NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS sampleTags (
+CREATE TABLE IF NOT EXISTS sampletags (
     id UUID PRIMARY KEY,
     sample_id UUID REFERENCES samples(sample_id) NOT NULL,
     tag_id UUID REFERENCES tags(tag_id)
 );
 
-CREATE TABLE IF NOT EXISTS packTags (
+CREATE TABLE IF NOT EXISTS packtags (
     id UUID PRIMARY KEY,
     pack_id UUID REFERENCES packs(pack_id) NOT NULL,
     tag_id UUID REFERENCES tags(tag_id)
