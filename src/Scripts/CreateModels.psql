@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS packs (
     pack_id UUID PRIMARY KEY,
     name VARCHAR (255) UNIQUE NOT NULL,
-    user_id UUID REFERENCES users(user_id),
+    user_id UUID REFERENCES users(user_id) ON DELETE CASCADE NOT NULL,
     price INTEGER NOT NULL,
     community BOOLEAN NOT NULL,
     created_on TIMESTAMP NOT NULL,
@@ -28,26 +28,33 @@ CREATE TABLE IF NOT EXISTS packs (
 CREATE TABLE IF NOT EXISTS samples (
     sample_id UUID PRIMARY KEY,
     name VARCHAR (255) UNIQUE NOT NULL,
-    user_id UUID REFERENCES users(user_id),
+    user_id UUID REFERENCES users(user_id) ON DELETE CASCADE NOT NULL,
     price INTEGER NOT NULL,
+    pack_id UUID REFERENCES packs(pack_id) ON DELETE CASCADE NOT NULL,
     created_on TIMESTAMP NOT NULL,
     sample_path VARCHAR (255) UNIQUE NOT NULL,
     key VARCHAR (255),
     bpm INTEGER
 );
 
-CREATE TABLE IF NOT EXISTS packsamples (
+CREATE TABLE IF NOT EXISTS communitypacksamples (
     id UUID PRIMARY KEY,
-    sample_id UUID REFERENCES samples(sample_id) NOT NULL,
-    pack_id UUID REFERENCES packs(pack_id) NOT NULL
+    sample_id UUID REFERENCES samples(sample_id) ON DELETE CASCADE NOT NULL,
+    pack_id UUID REFERENCES packs(pack_id) ON DELETE CASCADE NOT NULL 
 );
 
-CREATE TABLE IF NOT EXISTS likes (
+CREATE TABLE IF NOT EXISTS packlikes (
     like_id UUID PRIMARY KEY,
-    user_id UUID REFERENCES users(user_id),
-    sample_id UUID REFERENCES samples(sample_id),
-    pack_id UUID REFERENCES packs(pack_id)
+    user_id UUID REFERENCES users(user_id) ON DELETE CASCADE NOT NULL,
+    pack_id UUID REFERENCES packs(pack_id) ON DELETE CASCADE NOT NULL 
 );
+
+CREATE TABLE IF NOT EXISTS samplelikes (
+    like_id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(user_id) ON DELETE CASCADE NOT NULL,
+    sample_id UUID REFERENCES samples(sample_id) ON DELETE CASCADE NOT NULL 
+);
+
 
 CREATE TABLE IF NOT EXISTS tags (
     tag_id UUID PRIMARY KEY,
@@ -56,30 +63,35 @@ CREATE TABLE IF NOT EXISTS tags (
 
 CREATE TABLE IF NOT EXISTS sampletags (
     id UUID PRIMARY KEY,
-    sample_id UUID REFERENCES samples(sample_id) NOT NULL,
-    tag_id UUID REFERENCES tags(tag_id)
+    sample_id UUID REFERENCES samples(sample_id) ON DELETE CASCADE NOT NULL,
+    tag_id UUID REFERENCES tags(tag_id) ON DELETE CASCADE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS packtags (
     id UUID PRIMARY KEY,
-    pack_id UUID REFERENCES packs(pack_id) NOT NULL,
-    tag_id UUID REFERENCES tags(tag_id)
+    pack_id UUID REFERENCES packs(pack_id) ON DELETE CASCADE NOT NULL,
+    tag_id UUID REFERENCES tags(tag_id) ON DELETE CASCADE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS comments (
     comment_id UUID PRIMARY KEY,
-    user_id UUID REFERENCES users(user_id),
+    user_id UUID REFERENCES users(user_id) ON DELETE CASCADE NOT NULL,
     title VARCHAR (255) NOT NULL,
     body VARCHAR (255) NOT NULL,
     rating INTEGER NOT NULL,
-    pack_id UUID REFERENCES packs(pack_id) NOT NULL,
+    pack_id UUID REFERENCES packs(pack_id) ON DELETE CASCADE NOT NULL,
     created_on TIMESTAMP NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS downloads (
+CREATE TABLE IF NOT EXISTS packdownloads (
     id UUID PRIMARY KEY,
-    user_id UUID REFERENCES users(user_id) NOT NULL,
-    pack_id UUID REFERENCES packs(pack_id),
-    sample_id UUID REFERENCES samples(sample_id) NOT NULL
+    user_id UUID REFERENCES users(user_id) ON DELETE CASCADE NOT NULL,
+    pack_id UUID REFERENCES packs(pack_id) ON DELETE CASCADE NOT NULL 
+);
+
+CREATE TABLE IF NOT EXISTS sampledownloads (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(user_id) ON DELETE CASCADE NOT NULL,
+    sample_id UUID REFERENCES samples(sample_id) ON DELETE CASCADE NOT NULL
 );
 
