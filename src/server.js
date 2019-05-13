@@ -5,12 +5,12 @@ const expressGraphQL = require('express-graphql');
 const schema = require('./Data/Schema/Schema.js');
 const bodyParser = require('body-parser')
 const cors = require('cors');
-app.use(express.static(path.join(__dirname, 'build')));
+const db = require('./Data/Sequelize/Sequelize');
 
-//TEST
-app.get('/ping', function (req, res) {
- return res.send('pong');
-});
+db.authenticate()
+  .then(() => console.log('Database connected...'))
+  .catch(err => console.log('Error: ' + err));
+
 //ENABLE CORS
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -24,16 +24,16 @@ app.use(
       extended: true,
     })
 );
-//GraphQL
-app.use('/graphql', cors(), bodyParser.json(), expressGraphQL((req) => {
-  return {
-    schema,
-    context: {
-      user: req.user
-    }
-  };
-}));
 
+var graphqlHTTP = require("express-graphql");
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema: schema,
+    rootValue: global,
+    graphiql: true
+  })
+);
 
 app.listen(process.env.PORT || 8080, () => {
   console.log("Listening on Port 8080");
