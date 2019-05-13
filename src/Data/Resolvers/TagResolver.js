@@ -1,7 +1,7 @@
 const Models = require('../Sequelize/Models/index.js');
 
 module.exports = function userResolver(parentValue) {
-    return Models.users.findByPk(parentValue.user_id)
+    return Models.tags.findByPk(parentValue.tag_id)
     .then(resp => {
       console.log(resp);
       return resp;

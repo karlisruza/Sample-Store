@@ -21,7 +21,7 @@ module.exports = new GraphQLObjectType({
        user_id: {
            type: UserType,
            resolve(parentValue, args){
-              return userResolver(parentValue, args); 
+              return userResolver(parentValue.user_id);
            }
        },
        price: { type: GraphQLInt },

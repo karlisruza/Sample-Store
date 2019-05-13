@@ -1,25 +1,29 @@
 const db = require('../Sequelize.js');
 const Sequelize = require('sequelize');
 
-module.exports = db.define('packs', {
-      pack_id: {
+module.exports = db.define('comments', {
+      comment_id: {
         type: Sequelize.UUID,
         primaryKey: true,
         allowNull: false
       },
-      name: {
+      user_id:{
+        type: Sequelize.UUID,
+        allowNull: false
+      },
+      title: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      price: {
+      body: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      rating: {
           type: Sequelize.INTEGER,
           allowNull: false
       },
-      community: {
-          type: Sequelize.BOOLEAN,
-          allowNull: false
-      },
-      user_id:{
+      pack_id:{
         type: Sequelize.UUID,
         allowNull: false
       },
@@ -27,15 +31,7 @@ module.exports = db.define('packs', {
           type: Sequelize.DATE,
           allowNull: false
       },
-      demo_path: {
-          type: Sequelize.STRING,
-          allowNull: false
-      },
-      img_path: {
-          type: Sequelize.STRING,
-      }
     },{
           timestamps: false,
-          // underscored: true
 });
       

@@ -22,13 +22,13 @@ module.exports = new GraphQLObjectType({
          user_id: {
              type: UserType,
              resolve(parentValue, args){
-                return userResolver(parentValue, args); 
+                return userResolver(parentValue); 
              }
          },
          pack_id: {
              type: PackType,
              resolve(parentValue, args){
-                 return packResolver(parentValue, args);
+                 return packResolver(parentValue);
              }
         },
          price: { type: GraphQLInt },

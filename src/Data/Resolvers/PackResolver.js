@@ -1,9 +1,7 @@
-const db = require('../Sequelize/Sequelize');
+const Models = require('../Sequelize/Models/index.js');
 
-module.exports = function userResolver(parentValue, args) {
-    console.log(parentValue.user_id);
-    const query = `SELECT * FROM "packs" WHERE user_id='${parentValue.pack_id}'`;
-    return db.conn.one(query)
+module.exports = function packResolver(parentValue, args) {
+    return Models.packs.findByPk(parentValue.pack_id)
         .then(data => {
             return data;
         })

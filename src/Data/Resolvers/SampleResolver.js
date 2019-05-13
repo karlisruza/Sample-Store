@@ -1,7 +1,7 @@
 const Models = require('../Sequelize/Models/index.js');
 
-module.exports = function userResolver(parentValue) {
-    return Models.users.findByPk(parentValue.user_id)
+module.exports = function sampleResolver(parentValue) {
+    return Models.samples.findByPk(parentValue.sample_id)
     .then(resp => {
       console.log(resp);
       return resp;

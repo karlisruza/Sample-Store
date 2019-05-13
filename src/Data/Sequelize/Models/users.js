@@ -2,7 +2,7 @@ const db = require('../Sequelize.js');
 const Sequelize = require('sequelize');
 
 module.exports = db.define('users', {
-    user_id: {
+      user_id: {
         type: Sequelize.UUID,
         primaryKey: true,
         allowNull: false
@@ -35,5 +35,7 @@ module.exports = db.define('users', {
           allowNull: false
       }
     },{
-          timestamps: false
+          timestamps: false,
       });
+
+      
