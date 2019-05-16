@@ -10,6 +10,23 @@ class SampleCard extends React.Component{
         super(props);
         this.state = {liked: false};
     }
+    componentDidMount = () =>{
+        const query=`{
+            sampletags(id: "${this.props.sample_id}"){
+                tag_id{
+                    name
+                }
+            }}`;
+        fetch('http://localhost:8080/graphql', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              query: query,
+            }),
+          })
+          .then( response => response.json() )
+          .then( response => this.setState({queryResults: response.data} ) );
+    }
 
     handleLikeClick = () => {
         this.setState({liked: !this.state.liked});
@@ -19,12 +36,17 @@ class SampleCard extends React.Component{
     }
 
     render(){
-        const { title, tags, bpm, rootKey } = this.props;
+        let tags;
+        if(!this.state.queryResults) return null;
+        else tags = this.state.queryResults.sampletags
+        const { title, bpm, rootKey } = this.props;
         const { liked } = this.state;
+
+        console.log(tags);
+
         
-        const tagz = Object.values(tags);
-        let badges = tagz.map(tag =>
-           <h5 className='sample__tag'><Badge color="secondary">{tag}</Badge></h5>
+        let badges = tags.map(tag =>
+           <h5 className='sample__tag'><Badge color="secondary">{tag.tag_id.name}</Badge></h5>
         );
         
         let heart;

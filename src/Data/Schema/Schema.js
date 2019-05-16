@@ -1,4 +1,6 @@
 const graphql = require('graphql');
+const uuid = require('uuid/v4');
+const moment = require('moment');
 // const pgp = require('pg-promise')();
 const UserType = require('../Types/UserType');
 const PackType = require('../Types/PackType');
@@ -14,7 +16,7 @@ const PackDownloadType = require('../Types/PackDownloadType');
 const SampleDownloadType = require('../Types/SampleDownloadType');
 const Models = require('../Sequelize/Models/index.js');
 
-const { GraphQLObjectType, GraphQLSchema, GraphQLID, GraphQLList } = graphql;
+const { GraphQLObjectType, GraphQLSchema, GraphQLID, GraphQLList, GraphQLString, GraphQLNonNull } = graphql;
 const RootQuery = new GraphQLObjectType({
      name: 'RootQueryType',
      fields: {
@@ -49,14 +51,28 @@ const RootQuery = new GraphQLObjectType({
             type: new GraphQLList(SampleType),
             args: { id: { type: GraphQLID}},
             resolve(parentValue, args){
-                return Models.samples.findAll()
-                .then(data => {
-                    console.log(data);
-                    return data;
-                })
-                .catch(err => {
-                    return 'error: ', err;
-                });
+                if(args.id){
+                    return Models.samples.findAll({
+                        where: {pack_id: args.id}
+                    })
+                    .then(data => {
+                        console.log(data);
+                        return data;
+                    })
+                    .catch(err => {
+                        return 'error: ', err;
+                    });
+                }
+                else{
+                    return Models.samples.findAll()
+                        .then(data => {
+                            console.log(data);
+                            return data;
+                        })
+                        .catch(err => {
+                            return 'error: ', err;
+                        });
+                }
              }
          },
          sample: {
@@ -140,28 +156,58 @@ const RootQuery = new GraphQLObjectType({
          },
          sampletags: {
             type: new GraphQLList(SampleTagsType),
+            args: { id: { type: GraphQLID}},
             resolve(parentValue, args){
-                return Models.sampletags.findAll()
-                .then(data => {
-                    console.log(data);
-                    return data;
-                })
-                .catch(err => {
-                    return 'error: ', err;
-                });
+                if(args.id){
+                    return Models.sampletags.findAll({
+                        where: {sample_id: args.id}
+                    })
+                    .then(data => {
+                        console.log(data);
+                        return data;
+                    })
+                    .catch(err => {
+                        return 'error: ', err;
+                    });
+                }
+                else{
+                    return Models.sampletags.findAll()
+                    .then(data => {
+                        console.log(data);
+                        return data;
+                    })
+                    .catch(err => {
+                        return 'error: ', err;
+                    });
+                }
              }
          },
          comments: {
             type: new GraphQLList(CommentType),
+            args: { pack_id: { type: GraphQLID}},
             resolve(parentValue, args){
-                return Models.comments.findAll()
-                .then(data => {
-                    console.log(data);
-                    return data;
-                })
-                .catch(err => {
-                    return 'error: ', err;
-                });
+                if(args.id){
+                    return Models.comments.findAll({
+                        where: {pack_id: args.pack_id}
+                    })
+                    .then(data => {
+                        console.log(data);
+                        return data;
+                    })
+                    .catch(err => {
+                        return 'error: ', err;
+                    });
+                }
+                else{
+                    return Models.comments.findAll()
+                    .then(data => {
+                        console.log(data);
+                        return data;
+                    })
+                    .catch(err => {
+                        return 'error: ', err;
+                    });
+                }
              }
          },
          packdownloads: {
@@ -193,7 +239,34 @@ const RootQuery = new GraphQLObjectType({
      }
  })
 
+const mutation = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+        addUser: {
+            type: UserType,
+            args: {
+                username: { type: new GraphQLNonNull(GraphQLString) },
+                email: { type: new GraphQLNonNull(GraphQLString) },
+                password: { type: new GraphQLNonNull(GraphQLString) },
+                name: { type: new GraphQLNonNull(GraphQLString) },
+            },
+            resolve(parentValue, args){
+                args.user_id = uuid(); 
+                args.coins = 0;
+                args.created_on = moment().valueOf();
+                return Models.users.create(args)
+                .then(data => {
+                    return data;
+                })
+                .catch(err => {
+                    return 'error: ', err;
+                });
+            }
+        }
+    }
+});
  module.exports = new GraphQLSchema({
-     query: RootQuery
+     query: RootQuery,
+     mutation: mutation
  })
 

@@ -27,9 +27,9 @@ const sampledownloads = require('./sampledownloads');
 //     onDelete: 'cascade',
 //   });
 
-sequelize.sync({force: false}).then(function () {
-    console.log("Database Configured");
-});
+// sequelize.sync({force: false}).then(function () {
+//     console.log("Database Configured");
+// });
 
 module.exports = {
     users,

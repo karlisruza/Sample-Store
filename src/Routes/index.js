@@ -16,9 +16,9 @@ const Routes = props => {
         <Route path="/" component={Home} exact />
         <Route path="/register" component={Register}/>
         <Route path="/packs" component={Packs} />
-        <Route path="/pack" component={Pack} />
+        <Route path="/pack/:id" component={Pack} />
         <Route path="/createpack" component={CreatePack} />
-        <Route path="/user" component={Profile} />
+        <Route path="/user/:username" component={Profile} />
         <Route path="/admin" component={Admin} />
         {/* <Route component={NotFound} /> */}
     </BrowserRouter>
