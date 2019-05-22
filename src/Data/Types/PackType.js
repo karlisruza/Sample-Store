@@ -49,6 +49,7 @@ module.exports = new GraphQLObjectType({
                 return 'error: ', err;
               });
            }
-        }
+        },
+        description: { type: GraphQLString }
     })
 })

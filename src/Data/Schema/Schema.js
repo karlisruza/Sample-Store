@@ -16,7 +16,7 @@ const PackDownloadType = require('../Types/PackDownloadType');
 const SampleDownloadType = require('../Types/SampleDownloadType');
 const Models = require('../Sequelize/Models/index.js');
 
-const { GraphQLObjectType, GraphQLSchema, GraphQLID, GraphQLList, GraphQLString, GraphQLNonNull } = graphql;
+const { GraphQLObjectType, GraphQLSchema, GraphQLID, GraphQLList, GraphQLString, GraphQLNonNull, GraphQLInt } = graphql;
 const RootQuery = new GraphQLObjectType({
      name: 'RootQueryType',
      fields: {
@@ -36,6 +36,7 @@ const RootQuery = new GraphQLObjectType({
          },
          packs: {
              type: new GraphQLList(PackType),
+             args: {id: {type: GraphQLID}},
              resolve(parentValue, args){
                 return Models.packs.findAll()
                 .then(data => {
@@ -47,6 +48,20 @@ const RootQuery = new GraphQLObjectType({
                 });
              }
          },
+         pack: {
+            type: PackType,
+            args: {id: {type: GraphQLID}},
+            resolve(parentValue, args){
+                   return Models.packs.findByPk(args.id)
+                   .then(data => {
+                       console.log(data);
+                       return data;
+                   })
+                   .catch(err => {
+                       return 'error: ', err;
+                   });
+            }
+        },
          samples: {
             type: new GraphQLList(SampleType),
             args: { id: { type: GraphQLID}},
@@ -255,6 +270,44 @@ const mutation = new GraphQLObjectType({
                 args.coins = 0;
                 args.created_on = moment().valueOf();
                 return Models.users.create(args)
+                .then(data => {
+                    return data;
+                })
+                .catch(err => {
+                    return 'error: ', err;
+                });
+            }
+        },
+        addComment: {
+            type: CommentType,
+            args: {
+                title: { type: new GraphQLNonNull(GraphQLString) },
+                body: { type: new GraphQLNonNull(GraphQLString) },
+                rating: { type: new GraphQLNonNull(GraphQLInt) },
+                user_id: { type: new GraphQLNonNull(GraphQLID) },
+                pack_id: { type: new GraphQLNonNull(GraphQLID) },
+            },
+            resolve(parentValue, args){
+                args.comment_id = uuid(); 
+                args.created_on = moment().valueOf();
+                return Models.comments.create(args)
+                .then(data => {
+                    return data;
+                })
+                .catch(err => {
+                    return 'error: ', err;
+                });
+            }
+        },
+        deleteComment: {
+            type: CommentType,
+            args: {
+                comment_id: { type: new GraphQLNonNull(GraphQLID) },
+            },
+            resolve(parentValue, args){
+                return Models.comments.destroy({
+                    where: {comment_id: args.comment_id}
+                })
                 .then(data => {
                     return data;
                 })
