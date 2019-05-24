@@ -11,4 +11,6 @@ Izmantotās tehnoloģijas
   -Sequelize ORM
   -Google Cloud file storage
 
-*This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Projektā izmantots yarn package manager un node v10.
+Pēc moduļu instalēšanas jāizpilda 'yarn start' scripts, un atsevišķā termināl=ī jāizpilda node server.js no /src foldera.
+Pats projekts nestrādās, jo git repo nav google cloud atslēgas.
