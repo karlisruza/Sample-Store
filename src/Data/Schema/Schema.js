@@ -16,7 +16,7 @@ const PackDownloadType = require('../Types/PackDownloadType');
 const SampleDownloadType = require('../Types/SampleDownloadType');
 const Models = require('../Sequelize/Models/index.js');
 
-const { GraphQLObjectType, GraphQLSchema, GraphQLID, GraphQLList, GraphQLString, GraphQLNonNull, GraphQLInt } = graphql;
+const { GraphQLObjectType, GraphQLSchema, GraphQLID, GraphQLList, GraphQLString, GraphQLNonNull, GraphQLInt, GraphQLBoolean } = graphql;
 const RootQuery = new GraphQLObjectType({
      name: 'RootQueryType',
      fields: {
@@ -308,6 +308,86 @@ const mutation = new GraphQLObjectType({
                 return Models.comments.destroy({
                     where: {comment_id: args.comment_id}
                 })
+                .then(data => {
+                    return data;
+                })
+                .catch(err => {
+                    return 'error: ', err;
+                });
+            }
+        },
+        addSample: {
+            type: SampleType,
+            args: {
+                name: { type: new GraphQLNonNull(GraphQLString) },
+                user_id: { type: new GraphQLNonNull(GraphQLID) },
+                price: { type: new GraphQLNonNull(GraphQLInt) },
+                pack_id: { type: new GraphQLNonNull(GraphQLID) },
+                sample_path: { type: new GraphQLNonNull(GraphQLString) },
+                key: { type: GraphQLString },
+                bpm: { type: GraphQLInt},
+            },
+            resolve(parentValue, args){
+                args.sample_id = uuid();
+                args.created_on = moment().valueOf();
+                return Models.samples.create(args)
+                .then(data => {
+                    return data;
+                })
+                .catch(err => {
+                    return 'error: ', err;
+                });
+            }
+        },
+        addPack: {
+            type: PackType,
+            args: {
+                pack_id: { type: new GraphQLNonNull(GraphQLID) },
+                name: { type: new GraphQLNonNull(GraphQLString) },
+                user_id: { type: new GraphQLNonNull(GraphQLID) },
+                price: { type: new GraphQLNonNull(GraphQLInt) },
+                community: { type: new GraphQLNonNull(GraphQLBoolean) },
+                demo_path: { type: new GraphQLNonNull(GraphQLString) },
+                description: { type: new GraphQLNonNull(GraphQLID) },
+                img_path: { type: GraphQLString },
+            },
+            resolve(parentValue, args){
+                args.created_on = moment().valueOf();
+                return Models.packs.create(args)
+                .then(data => {
+                    return data;
+                })
+                .catch(err => {
+                    return 'error: ', err;
+                });
+            }
+        },
+        addSampleTag:{
+            type: SampleTagsType,
+            args: {
+                sample_id: { type: new GraphQLNonNull(GraphQLID) },
+                tag_id: { type: new GraphQLNonNull(GraphQLID) },
+            },
+            resolve(parentValue, args){
+                args.id = uuid();
+                return Models.sampletags.create(args)
+                .then(data => {
+                    return data;
+                })
+                .catch(err => {
+                    return 'error: ', err;
+                });
+            }
+        },
+        addPackTag:{
+            type: PackTagsType,
+            args: {
+                pack_id: { type: new GraphQLNonNull(GraphQLID) },
+                tag_id: { type: new GraphQLNonNull(GraphQLID) },
+            },
+            resolve(parentValue, args){
+                args.id = uuid();
+                return Models.packtags.create(args)
                 .then(data => {
                     return data;
                 })

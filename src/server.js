@@ -34,6 +34,7 @@ const upload = multer({
 app.post('/uploadpack', upload.single('files'), function(req, res, next){
   const id = uuid();
   const type = mime.lookup(req.file.originalname);
+  console.log(req.file);
 
   const blob = bucket.file(`${id}.${mime.extensions[type][0]}`);
   const stream = blob.createWriteStream({
@@ -47,7 +48,8 @@ app.post('/uploadpack', upload.single('files'), function(req, res, next){
 	stream.on('finish', () => {
 		res.status(200).json({
 			data: {
-				id: id
+        id: id,
+        path: `https://storage.googleapis.com/${bucketName}/${id}.${mime.extensions[type][0]}`
 			},
 		});
 	});
