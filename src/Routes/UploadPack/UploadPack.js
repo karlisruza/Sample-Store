@@ -1,9 +1,10 @@
 import React from 'react';
-import { Button, Form, Input, FormGroup } from 'reactstrap';
-import Layout from '../../Components/Layout/Layout.js'
+import { Button, Form, Input, FormGroup, Modal, ModalBody } from 'reactstrap';
+import Layout from '../../Components/Layout/Layout.js';
 import Container from '../../Components/Layout/Container/Container.js';
-import Dropzone from 'react-dropzone'
+import Dropzone from 'react-dropzone';
 import Select from 'react-select';
+import { Redirect } from 'react-router-dom'
 import uuid from 'uuid/v4';
 
 import SampleCard from '../../Components/SampleUploadCard/SampleUploadCard.js';
@@ -14,15 +15,17 @@ const user_id = "ea7e866f-6005-46a6-9fa1-3a751a3de40c";
 class Upload extends React.Component{
     constructor(props){
         super(props);
-        this.state = {newSamples: [], files: [], formValues: {}};
+        this.state = {newSamples: [], files: [], formValues: {}, modal: false, redirect:false};
     }
 
+    //fetches tags from db
     componentDidMount = () =>{
         const query = `{
             tags{
+                tag_id
                 name
             }
-        }`
+        }`;
         fetch('http://localhost:8080/graphql', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -33,7 +36,61 @@ class Upload extends React.Component{
           .then( response => response.json() )
           .then( response => this.setState({queryResults: response.data} ) );
     }
+    renderRedirect = () => {
+        if (this.state.redirect) {
+            let path = `pack/${this.state.newPackPath}`
+            return <Redirect to={path} />
+        }
+    }
 
+    //Removes file from file state and edits formValues object to represent the new order of values
+    removeSampleCallback = (index) =>{
+        const priceName = 'samplePrice';
+        const bpmName = 'bpm';
+        const keyName = 'key';
+        const tagsName = 'sampleTags';
+        const name = 'name';
+
+        let newFormValues = this.state.formValues;
+        //helper for removing formvalues for the deleted object
+        for(let i = index; i < this.state.files.length; i++){
+            if(i === index){
+                if(newFormValues[priceName + i]) delete newFormValues[priceName + i];
+                if(newFormValues[bpmName + i]) delete newFormValues[bpmName + i];
+                if(newFormValues[keyName + i]) delete newFormValues[keyName + i];
+                if(newFormValues[tagsName + i]) delete newFormValues[tagsName + i];
+                if(newFormValues[name + i]) delete newFormValues[name + i];
+            }
+            else{
+                if(newFormValues[priceName + i]){
+                    newFormValues[priceName + (i-1)] = newFormValues[priceName + i];
+                    delete newFormValues[priceName + i];
+                }
+                if(newFormValues[bpmName + i]){
+                    newFormValues[bpmName + (i-1)] = newFormValues[bpmName + i];
+                    delete newFormValues[bpmName + i];
+                }
+                if(newFormValues[keyName + i]){
+                    newFormValues[keyName + (i-1)] = newFormValues[keyName + i];
+                    delete newFormValues[keyName + i];
+                }
+                if(newFormValues[tagsName + i]){
+                    newFormValues[tagsName + (i-1)] = newFormValues[tagsName + i];
+                    delete newFormValues[tagsName + i];
+                }
+                if(newFormValues[name + i]){
+                    newFormValues[name + (i-1)] = newFormValues[name + i];
+                    delete newFormValues[name + i];
+                }
+            }
+        }
+        let newFiles = [...this.state.files];
+        newFiles.splice(index, 1);
+        this.setState({files: newFiles, formValues: newFormValues})
+        console.log('dddd');
+        console.log(this.state.formValues);
+        console.log(this.state.files);
+    }
     //maps form input values to state
     handleInputChange = (e) =>{
         let newFormData = this.state.formValues;
@@ -41,17 +98,20 @@ class Upload extends React.Component{
         this.setState({formValues: newFormData});
         console.log(this.state.formValues);
     }
+    //handles pack tags input change
     handleSelectChange = (e) =>{
         let newFormData = this.state.formValues;
         newFormData['packTags'] = e;
         this.setState({formValues: newFormData});
     }
+    //handles a samples tags input change
     handleSampleTagChange = (e, index)=>{
         let newFormData = this.state.formValues;
         const fieldName = 'sampleTags' + index;
         newFormData[fieldName] = e;
         this.setState({formValues: newFormData});
     }
+    //handles a samples key change
     handleSampleKeyChange = (e, index)=>{ 
         let newFormData = this.state.formValues;
         const fieldName = 'key' + index;
@@ -61,12 +121,8 @@ class Upload extends React.Component{
     //clientside only
     handleFileUpload = (files) =>{
         let allFiles = [...this.state.files];
-        console.log(this.state.files);
-
         allFiles = allFiles.concat(files);
-        console.log("allfiles", allFiles);
         this.setState({files: allFiles});
-        console.log(this.state.files);
     }
     //clientside only
     handleImgUpload = (files) =>{
@@ -79,29 +135,19 @@ class Upload extends React.Component{
         else this.setState({demo: files});  
     }
 
-
+    //Passes files to backend, which writes the files to GCS
     handleSubmit = async (e) =>{
         e.preventDefault();
-        console.log('handlesubmit1');
-        console.log(this.state.files);
+        this.setState({modal: true});
+
         const filez = [...this.state.files];
-        console.log('handlesubmit2');
         const { img, demo} = this.state;
-        console.log(this.state.files);
         if(img && img.length > 0) filez.push(this.state.img[0]);
         if(demo && demo.length > 0) filez.push(this.state.demo[0]);
-        console.log('handlesubmit3');
-        console.log(this.state.files);
-        console.log('aaa');
-        // return;
 
         for(let i = 0; i < filez.length; i++){
             const form = new FormData();
             form.append('files', filez[i]);
-
-            // let promise = new Promise(resolve =>{
-            //     console.log('resolved');
-            // });
 
             await fetch('http://localhost:8080/uploadpack', {
                 method: "POST",
@@ -130,24 +176,10 @@ class Upload extends React.Component{
         }
     }
 
-    databaseInsert = () =>{
-        const addSampleMutation = `mutation {
-            addSample(name: "testsample", user_id: "ea7e866f-6005-46a6-9fa1-3a751a3de40c", price: 100, pack_id:"ea7e866f-6005-46a6-9fa1-3a751a3de41d", sample_path: "aa", key:"A", bpm:120){
-            sample_id
-          }
-        }`;
-        const packTagsMutations = `mutation {
-            addPackTag(pack_id: "ea8e866f-6005-46a6-9fa1-3a751a3de41d", tag_id: "ea7e866f-6005-46a9-9fa1-4a751a3de42a"){
-            id
-          }
-        }`;
-        const sampleTagsMutations = `mutation {
-            addSampleTag(sample_id: "ea8e866f-6005-46a6-9fa1-3a751a3de41d", tag_id: "ea7e866f-6005-46a9-9fa1-4a751a3de42a"){
-            id
-          }
-        }`;
-        /////////////////////////
+    //Called after all files have been uploaded to GCS, Inserts data into database
+    databaseInsert = async() =>{
         const pack_id = uuid();
+        this.setState({newPackPath: pack_id})
         const community = false;
         const demo_path = this.state.demo_info.path;
         const { packName, packPrice, packDescription } = this.state.formValues;
@@ -164,22 +196,90 @@ class Upload extends React.Component{
             }
         }`;
 
-        console.log('db insert f()');
-
-
-        fetch('http://localhost:8080/graphql', {
+        //inserts pack entry in to packs
+        await fetch('http://localhost:8080/graphql', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               query: addPackMutation,
             }),
           })
-          .then( response => response.json() )
-          .then( response => {
-                console.log('pack added');
-                console.log(this.state.files);
-            });
+        .then( response => response.json() )
+        .then( response => {});
 
+        //Add samples
+        const priceName = 'samplePrice';
+        const bpmName = 'bpm';
+        const keyName = 'key';
+        const tagsName = 'sampleTags';
+        const sampleName = 'name';
+
+        let newSampleId = [];
+        for(let i = 0; i < this.state.files.length; i++){
+            const name = this.state.formValues[sampleName + i];
+            const bpm = this.state.formValues[bpmName + i];
+            const key = this.state.formValues[keyName + i];
+            const price = this.state.formValues[priceName + i];
+
+            const sample_id = uuid();
+            newSampleId.push(sample_id);
+
+            const addSampleMutation = `mutation {
+                addSample(sample_id:"${sample_id}", name:"${name}", user_id: "${user_id}", price: ${price}, pack_id:"${pack_id}", sample_path: "${this.state.newSamples[i].path}", key:"${key}", bpm:${bpm}){
+                sample_id
+              }
+            }`;
+
+            await fetch('http://localhost:8080/graphql', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  query: addSampleMutation,
+                }),
+              })
+            .then( response => response.json() )
+            .then( response => {});
+        }
+        // Add all tags to a pack in db
+        const packTags = this.state.formValues['packTags'];        
+        for(let i = 0; i < packTags.length; i++){
+            const packTagsMutation = `mutation {
+                addPackTag(pack_id: "${pack_id}", tag_id: "${packTags[i].value}"){
+                id
+              }
+            }`;
+            await fetch('http://localhost:8080/graphql', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                query: packTagsMutation,
+                }),
+            })
+            .then( response => response.json() )
+            .then( response => {});
+        }
+        //Add all tags to all samples in db
+        const { formValues } = this.state;
+        for(let sampleCounter = 0; sampleCounter < this.state.files.length; sampleCounter++){
+            const tagArray = formValues[tagsName+sampleCounter];
+            for(let tagCounter = 0; tagCounter < tagArray.length; tagCounter++){
+                const sampleTagsMutation = `mutation {
+                    addSampleTag(sample_id: "${newSampleId[sampleCounter]}", tag_id: "${tagArray[tagCounter].value}"){
+                    id
+                  }
+                }`;
+                await fetch('http://localhost:8080/graphql', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                    query: sampleTagsMutation,
+                    }),
+                })
+                .then( response => response.json() )
+                .then( response => {});
+            }
+        }
+        this.setState({redirect: true});
     }
 
     render(){
@@ -188,7 +288,7 @@ class Upload extends React.Component{
         const { tags } = this.state.queryResults;
         let selectOptions = [];
         for(let i = 0; i < tags.length; i++){
-            const option = { value: tags[i].name, label: tags[i].name };
+            const option = { value: tags[i].tag_id, label: tags[i].name };
             selectOptions.push(option);
         }
         
@@ -204,8 +304,9 @@ class Upload extends React.Component{
                     callback={this.handleInputChange} 
                     tagsCallback={this.handleSampleTagChange}
                     keyCallback={this.handleSampleKeyChange}
+                    deleteCallback={this.removeSampleCallback}
                 />
-            )
+            );
         }
         //creates displayable image, if one has been uploaded
         let imgData;
@@ -228,9 +329,18 @@ class Upload extends React.Component{
              reader.readAsDataURL(audio);
         }
 
+
+
         return (
             <Layout>
                 <Container>
+                    <Modal isOpen={this.state.modal}>
+                        <ModalBody>
+                            {this.renderRedirect()}
+                            <div className="ui active centered inline loader"></div>
+                            <h3>We'll take you to your pack page, when it's up and running!</h3>
+                        </ModalBody>   
+                    </Modal>         
                     <Form onSubmit={this.handleSubmit}>
                          <Dropzone name='image' onDrop={acceptedFiles => this.handleImgUpload(acceptedFiles)}>
                             {({getRootProps, getInputProps}) => (
@@ -285,21 +395,6 @@ class Upload extends React.Component{
                         <Button type='submit' color='primary'>Publish the pack!</Button>
                     </Form>
                 </Container>
-                {/* <Button onClick={this.handleClick}>Upload</Button>
-                <Button onClick={this.handleDl}>Download</Button>
-                <a href='https://www.googleapis.com/download/storage/v1/b/sample__shop/o/electric%20piano%2090bpm.mp3?generation=1558346428233155&alt=media'> download </a>
-                <audio
-                    controls
-                    src="https://www.googleapis.com/download/storage/v1/b/sample__shop/o/electric%20piano%2090bpm.mp3?generation=1558346428233155&alt=media">
-                    Your browser does not support the
-                    <code>audio</code> element.
-                </audio>
-                {/* <AudioPlayer
-                    autoPlay
-                    src="https://www.googleapis.com/download/storage/v1/b/sample__shop/o/electric%20piano%2090bpm.mp3?generation=1558346428233155&alt=media"
-                    onPlay={e => console.log("onPlay")}
-                    // other props here
-                /> */} */}
             </Layout>
         );
     }

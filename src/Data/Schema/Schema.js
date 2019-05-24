@@ -319,6 +319,7 @@ const mutation = new GraphQLObjectType({
         addSample: {
             type: SampleType,
             args: {
+                sample_id: { type: new GraphQLNonNull(GraphQLID) },
                 name: { type: new GraphQLNonNull(GraphQLString) },
                 user_id: { type: new GraphQLNonNull(GraphQLID) },
                 price: { type: new GraphQLNonNull(GraphQLInt) },
@@ -328,7 +329,6 @@ const mutation = new GraphQLObjectType({
                 bpm: { type: GraphQLInt},
             },
             resolve(parentValue, args){
-                args.sample_id = uuid();
                 args.created_on = moment().valueOf();
                 return Models.samples.create(args)
                 .then(data => {

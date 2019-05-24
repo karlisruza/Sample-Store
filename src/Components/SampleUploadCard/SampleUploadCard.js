@@ -27,12 +27,15 @@ class SampleCard extends React.Component{
         const { index } = this.props;
         const priceName = 'samplePrice' + index;
         const bpmName = 'bpm' + index;
+        const name = 'name' + index;
 
         return(
             <div className='sample__card'>
                 <Row className='row'>
                     <Col>
                         <span className='title'>{this.props.title}</span>
+                        <span>Name</span>
+                        <Input name={name} type='text' onChange={e => this.props.callback(e, index)} />
                         <span>Tags</span>
                         <Select placeholder='Choose some tags for this sample' 
                             isMulti={true} 
@@ -63,6 +66,7 @@ class SampleCard extends React.Component{
                             type="number" step="1" 
                             onChange={e => this.props.callback(e, index)}
                         />
+                        <i className="trash alternate icon" onClick={() => {this.props.deleteCallback(index)}}></i>
                     </Col>
                 </Row>
             </div>
