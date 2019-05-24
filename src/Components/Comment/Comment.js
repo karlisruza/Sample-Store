@@ -3,32 +3,46 @@ import React from 'react';
 import './Comment.scss';
 
 class Comment extends React.Component{
+
+    deleteComment = () =>{
+        const mutation=`mutation{
+            deleteComment(comment_id: "${this.props.comment_id}"){
+                comment_id
+            }
+        }`;
+        fetch('http://localhost:8080/graphql', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              query: mutation,
+            }),
+          })
+          .then( response => response.json() )
+          .then( response => {
+              this.props.callback(this.props.comment_id);
+            });
+        }
+    
     render(){
-        const mockData = {
-            title: "comment title",
-            body: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-            user: "karlisruza",
-            createdAt: "27.01.1997, 16:00",
-            edited: true,
-            img: '/path',
-            rating: 'rating'
-        };
+        const { img, user, title, body, rating, created} = this.props;
+        const user_link = `/user/`+this.props.user_id;
 
         return(
             <div className='comment'>
                 <div className='left__side'>
-                    <img src={mockData.img} alt="Picture goes here" />
-                    <span>By {mockData.user}</span>
+                    <img className="comment__img" src={img} alt="Picture goes here" />
+                    <a href={user_link}>By {user}</a>
                     <br />
-                    <span className='created__at'>Created at {mockData.createdAt}</span>
+                    <span className='created__at'>Created at {created}</span>
                 </div>
                 <div className='comment__content'>
-                    <h5 className='title'>{mockData.title}</h5>
-                    <span className='rating'>{mockData.rating}</span>
+                    <h5 className='title'>{title}</h5>
+                    <span className='rating'>{rating}</span>
                     <br />
                     <br />
-                    <p className='body'>{mockData.body}</p>
+                    <p className='body'>{body}</p>
                 </div>
+                <i class="trash alternate icon" onClick={this.deleteComment}></i>
             </div>
         );
     }

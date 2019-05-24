@@ -9,6 +9,7 @@ import Pack from './Pack/Pack.js';
 import CreatePack from './CreatePack/CreatePack.js'
 import Profile from './Profile/Profile.js';
 import Admin from './Admin/Admin.js';
+import UploadPack from './UploadPack/UploadPack'
 
 const Routes = props => {
     return (
@@ -16,10 +17,11 @@ const Routes = props => {
         <Route path="/" component={Home} exact />
         <Route path="/register" component={Register}/>
         <Route path="/packs" component={Packs} />
-        <Route path="/pack" component={Pack} />
+        <Route path="/pack/:id" component={Pack} />
         <Route path="/createpack" component={CreatePack} />
-        <Route path="/user" component={Profile} />
+        <Route path="/user/:username" component={Profile} />
         <Route path="/admin" component={Admin} />
+        <Route path="/upload" component={UploadPack} />
         {/* <Route component={NotFound} /> */}
     </BrowserRouter>
     );
