@@ -36,16 +36,30 @@ const RootQuery = new GraphQLObjectType({
          },
          packs: {
              type: new GraphQLList(PackType),
-             args: {id: {type: GraphQLID}},
+             args: {user_id: {type: GraphQLID}},
              resolve(parentValue, args){
-                return Models.packs.findAll()
-                .then(data => {
-                    console.log(data);
-                    return data;
-                })
-                .catch(err => {
-                    return 'error: ', err;
-                });
+                 if(args.user_id){
+                    return Models.packs.findAll({
+                        where: {user_id: args.user_id}
+                    })
+                    .then(data => {
+                        console.log(data);
+                        return data;
+                    })
+                    .catch(err => {
+                        return 'error: ', err;
+                    });
+                 }
+                 else{
+                    return Models.packs.findAll()
+                    .then(data => {
+                        console.log(data);
+                        return data;
+                    })
+                    .catch(err => {
+                        return 'error: ', err;
+                    });
+                 }
              }
          },
          pack: {
@@ -64,11 +78,26 @@ const RootQuery = new GraphQLObjectType({
         },
          samples: {
             type: new GraphQLList(SampleType),
-            args: { id: { type: GraphQLID}},
+            args: { 
+                id: { type: GraphQLID},
+                user_id: { type:GraphQLID }
+            },
             resolve(parentValue, args){
                 if(args.id){
                     return Models.samples.findAll({
                         where: {pack_id: args.id}
+                    })
+                    .then(data => {
+                        console.log(data);
+                        return data;
+                    })
+                    .catch(err => {
+                        return 'error: ', err;
+                    });
+                }
+                else if(args.user_id){
+                    return Models.samples.findAll({
+                        where: {user_id: args.user_id}
                     })
                     .then(data => {
                         console.log(data);
@@ -119,8 +148,11 @@ const RootQuery = new GraphQLObjectType({
          },
          packlikes: {
             type: new GraphQLList(PackLikesType),
+            args: { user_id: { type: GraphQLID}},
             resolve(parentValue, args){
-                return Models.packlikes.findAll()
+                return Models.packlikes.findAll({
+                    where: {user_id: args.user_id}
+                })
                 .then(data => {
                     console.log(data);
                     return data;
@@ -132,8 +164,11 @@ const RootQuery = new GraphQLObjectType({
          },
          samplelikes: {
             type: new GraphQLList(SampleLikesType),
+            args: { user_id: { type: GraphQLID}},
             resolve(parentValue, args){
-                return Models.samplelikes.findAll()
+                return Models.samplelikes.findAll({
+                    where: {user_id: args.user_id}
+                })
                 .then(data => {
                     console.log(data);
                     return data;
@@ -270,6 +305,44 @@ const mutation = new GraphQLObjectType({
                 args.coins = 0;
                 args.created_on = moment().valueOf();
                 return Models.users.create(args)
+                .then(data => {
+                    return data;
+                })
+                .catch(err => {
+                    return 'error: ', err;
+                });
+            }
+        },
+        updateUserImg: {
+            type: UserType,
+            args:{
+                user_id: { type: GraphQLID},
+                img_path: { type: new GraphQLNonNull(GraphQLString)}
+            },
+            resolve(parentValue, args){
+                return Models.users.update(
+                    {img_path: args.img_path},
+                    {where: {user_id: args.user_id}}
+                )
+                .then(data => {
+                    return data;
+                })
+                .catch(err => {
+                    return 'error: ', err;
+                });
+            }
+        },
+        updateUserCoins: {
+            type: UserType,
+            args:{
+                user_id: { type: GraphQLID},
+                coins: { type: new GraphQLNonNull(GraphQLInt)}
+            },
+            resolve(parentValue, args){
+                return Models.users.update(
+                    {coins: args.coins},
+                    {where: {user_id: args.user_id}}
+                )
                 .then(data => {
                     return data;
                 })
