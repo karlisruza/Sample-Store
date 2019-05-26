@@ -148,35 +148,69 @@ const RootQuery = new GraphQLObjectType({
          },
          packlikes: {
             type: new GraphQLList(PackLikesType),
-            args: { user_id: { type: GraphQLID}},
+            args: { 
+                user_id: { type: GraphQLID},
+                pack_id: { type: GraphQLID}
+            },
             resolve(parentValue, args){
-                return Models.packlikes.findAll({
-                    where: {user_id: args.user_id}
-                })
-                .then(data => {
-                    console.log(data);
-                    return data;
-                })
-                .catch(err => {
-                    return 'error: ', err;
-                });
+                if(!args.pack_id){
+                    return Models.packlikes.findAll({
+                        where: {user_id: args.user_id}
+                    })
+                    .then(data => {
+                        console.log(data);
+                        return data;
+                    })
+                    .catch(err => {
+                        return 'error: ', err;
+                    });
+                }
+                else{
+                    return Models.packlikes.findAll({
+                        where: {user_id: args.user_id, pack_id: args.pack_id}
+                    })
+                    .then(data => {
+                        console.log(data);
+                        return data;
+                    })
+                    .catch(err => {
+                        return 'error: ', err;
+                    });
+                }
              }
          },
          samplelikes: {
             type: new GraphQLList(SampleLikesType),
-            args: { user_id: { type: GraphQLID}},
+            args: { 
+                user_id: { type: GraphQLID },
+                sample_id: { type: GraphQLID }
+            },
             resolve(parentValue, args){
-                return Models.samplelikes.findAll({
-                    where: {user_id: args.user_id}
-                })
-                .then(data => {
-                    console.log(data);
-                    return data;
-                })
-                .catch(err => {
-                    return 'error: ', err;
-                });
-             }
+                if(!args.sample_id){
+                    return Models.samplelikes.findAll({
+                        where: {user_id: args.user_id}
+                    })
+                    .then(data => {
+                        console.log(data);
+                        return data;
+                    })
+                    .catch(err => {
+                        return 'error: ', err;
+                    });
+                }
+                else{
+                    return Models.samplelikes.findAll({
+                        where: {user_id: args.user_id, sample_id: args.sample_id}
+                    })
+                    .then(data => {
+                        console.log(data);
+                        return data;
+                    })
+                    .catch(err => {
+                        return 'error: ', err;
+                    });
+                }
+            }
          },
          tags: {
             type: new GraphQLList(TagsType),
@@ -468,7 +502,80 @@ const mutation = new GraphQLObjectType({
                     return 'error: ', err;
                 });
             }
-        }
+        },
+        addSampleLike:{
+            type: SampleLikesType,
+            args: {
+                sample_id: { type: new GraphQLNonNull(GraphQLID) },
+                user_id: { type: new GraphQLNonNull(GraphQLID) },
+            },
+            resolve(parentValue, args){
+                args.like_id = uuid();
+                return Models.samplelikes.create(args)
+                .then(data => {
+                    return data;
+                })
+                .catch(err => {
+                    return 'error: ', err;
+                });
+            }
+        },
+        deleteSampleLike:{
+            type: SampleLikesType,
+            args: {
+                sample_id: { type: new GraphQLNonNull(GraphQLID) },
+                user_id: { type: new GraphQLNonNull(GraphQLID) },
+            },
+            resolve(parentValue, args){
+                args.like_id = uuid();
+                return Models.samplelikes.destroy({
+                    where: {user_id: args.user_id, sample_id: args.sample_id}
+                })
+                .then(data => {
+                    return data;
+                })
+                .catch(err => {
+                    return 'error: ', err;
+                });
+            }
+        },
+        addPackLike:{
+            type: PackLikesType,
+            args: {
+                pack_id: { type: new GraphQLNonNull(GraphQLID) },
+                user_id: { type: new GraphQLNonNull(GraphQLID) },
+            },
+            resolve(parentValue, args){
+                args.like_id = uuid();
+                return Models.packlikes.create(args)
+                .then(data => {
+                    return data;
+                })
+                .catch(err => {
+                    return 'error: ', err;
+                });
+            }
+        },
+        deletePackLike:{
+            type: PackLikesType,
+            args: {
+                pack_id: { type: new GraphQLNonNull(GraphQLID) },
+                user_id: { type: new GraphQLNonNull(GraphQLID) },
+            },
+            resolve(parentValue, args){
+                args.like_id = uuid();
+                return Models.packlikes.destroy({
+                    where: {user_id: args.user_id, pack_id: args.pack_id}
+                })
+                .then(data => {
+                    return data;
+                })
+                .catch(err => {
+                    return 'error: ', err;
+                });
+            }
+        },
+
     }
 });
  module.exports = new GraphQLSchema({

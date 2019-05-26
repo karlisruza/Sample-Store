@@ -193,7 +193,7 @@ class Profile extends React.Component{
           key={pack.pack_id} 
           pack_id={pack.pack_id} name={pack.name} 
           username={pack.user_id.name} price={pack.price} 
-          demo={pack.demo_path} 
+          demo_path={pack.demo_path} 
           rating={pack.rating} 
           img={pack.img_path}
          />
@@ -204,7 +204,7 @@ class Profile extends React.Component{
           name={pack.pack_id.name} 
           username={pack.pack_id.user_id.name} 
           price={pack.pack_id.price} 
-          demo={pack.pack_id.demo_path} 
+          demo_path={pack.pack_id.demo_path} 
           rating={pack.pack_id.rating} 
           img={pack.pack_id.img_path}
         />
@@ -220,9 +220,6 @@ class Profile extends React.Component{
             sample_path={sample.sample_id.sample_path}
         />
       );
-
-
-
 
         return(
             <Layout>

@@ -50,6 +50,7 @@ class Pack extends React.Component{
                 pack_id
                 img_path
                 description
+                demo_path
                 rating
                 price
             }
@@ -96,7 +97,6 @@ class Pack extends React.Component{
             comments = this.state.queryResults.comments;
             pack = this.state.queryResults.pack;
         }
-        console.log(pack);
         
         if(samples){
             sampleList = samples.map(sample =>
@@ -127,7 +127,13 @@ class Pack extends React.Component{
             content = (
             <div>
                 <Row className='sidebar'>
-                    <PackCard img={pack.img_path} pack_id={pack.pack_id} rating={pack.rating} price={pack.price}/>
+                    <PackCard 
+                        img={pack.img_path} 
+                        pack_id={pack.pack_id} 
+                        demo_path={pack.demo_path} 
+                        rating={pack.rating} 
+                        price={pack.price}
+                    />
                     <br />
                     <Button color='primary' className='Btn'>Download</Button>
                     <p>{pack.description}</p>

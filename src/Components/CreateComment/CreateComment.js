@@ -71,10 +71,6 @@ class CreateComment extends React.Component{
             <Form className='comment__form' onSubmit={this.handleSubmit}>
                 <h3>Rate & comment</h3>
                 <Rating rating={5} />
-                <Rating rating={5} />
-                <Rating rating={5} />
-                <Rating rating={5} />
-                <Rating rating={5} />
                 <Input placeholder='Add a title...'className='input__title' name='title' onChange={this.handleInputChange}/>
                 <Input placeholder='Say something constructive!' className='input__body' name='body' onChange={this.handleInputChange}/>
                 <Button color='primary' type="submit" className='submit__btn'>Submit</Button>

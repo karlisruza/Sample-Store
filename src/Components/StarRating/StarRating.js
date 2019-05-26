@@ -16,7 +16,6 @@ class Rating extends React.PureComponent {
     render() {
         return (
           <StarRatings
-            rating={2.5}
             changeRating={this.changeRating}
             starDimension="40px"
             starSpacing="15px"

@@ -48,17 +48,20 @@ class Packs extends React.Component{
             packs = this.state.queryResults.packs;
             tags = this.state.queryResults.tags
         }
-
+        else return null;
+        
         let packList;
         let content;
 
-        console.log(packs);
-        console.log(tags);
-        console.log(this.state);
-
         if(packs && tags){
             packList = packs.map(pack =>
-                <PackCard key={pack.pack_id} pack_id={pack.pack_id} name={pack.name} username={pack.user_id.name} price={pack.price} demo={pack.demo_path} rating={pack.rating} img={pack.img_path}/>
+                <PackCard 
+                key={pack.pack_id} 
+                pack_id={pack.pack_id} 
+                name={pack.name} 
+                username={pack.user_id.name} 
+                price={pack.price} 
+                demo_path={pack.demo_path} rating={pack.rating} img={pack.img_path}/>
             );
             content = (
             <div>

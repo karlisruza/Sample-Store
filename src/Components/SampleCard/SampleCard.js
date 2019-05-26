@@ -5,6 +5,8 @@ import './SampleCard.scss';
 import PlayButton from '../Audio/PlayButton/PlayButton.js'
 import Waveform from '../Audio/Waveform/Waveform.js'
 
+const user_id = "ea7e866f-6005-46a6-9fa1-3a751a3de40c";
+
 class SampleCard extends React.Component{ 
     constructor(props){
         super(props);
@@ -16,7 +18,11 @@ class SampleCard extends React.Component{
                 tag_id{
                     name
                 }
-            }}`;
+            }
+            samplelikes(user_id:"${user_id}", sample_id:"${this.props.sample_id}"){
+                like_id
+            }
+        }`;
         fetch('http://localhost:8080/graphql', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -25,11 +31,34 @@ class SampleCard extends React.Component{
             }),
           })
           .then( response => response.json() )
-          .then( response => this.setState({queryResults: response.data} ) );
+          .then( response => this.setState({queryResults: response.data, liked:response.data.samplelikes} ) );
     }
 
     handleLikeClick = () => {
         this.setState({liked: !this.state.liked});
+        let mutation;
+        if(!this.state.liked){
+            mutation = `mutation{
+                            addSampleLike(user_id:"${user_id}", sample_id:"${this.props.sample_id}"){
+                                like_id
+                            }
+                        }`;
+        }
+        else{
+            mutation = `mutation{
+                deleteSampleLike(user_id:"${user_id}", sample_id:"${this.props.sample_id}"){
+                    like_id
+                }
+            }`;            
+        }
+        fetch('http://localhost:8080/graphql', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              query: mutation,
+            }),
+          })
+          .then( response => response.json() )
     }
     handleDownload = () => {
         console.log("download");
@@ -42,9 +71,6 @@ class SampleCard extends React.Component{
         const { title, bpm, rootKey } = this.props;
         const { liked } = this.state;
 
-        console.log(tags);
-
-        
         let badges = tags.map(tag =>
            <h5 className='sample__tag'><Badge color="secondary">{tag.tag_id.name}</Badge></h5>
         );
@@ -56,8 +82,7 @@ class SampleCard extends React.Component{
         return(
             <div className='sample__card'>
                 <Row className='row'>
-                    <PlayButton />
-                    <Waveform />
+                    <audio controls controlsList='nodownload' src={this.props.sample_path} />
                     <Col>
                         <span className='title'>{title}</span>
                         <br />
