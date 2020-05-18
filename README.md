@@ -12,5 +12,5 @@ Izmantotās tehnoloģijas
   -Google Cloud file storage
 
 Projektā izmantots yarn package manager un node v10.
-Pēc moduļu instalēšanas jāizpilda 'yarn start' scripts, un atsevišķā termināl=ī jāizpilda node server.js no /src foldera.
+Pēc moduļu instalēšanas jāizpilda 'yarn start' scripts, un atsevišķā terminālī jāizpilda node server.js no /src foldera.
 Projektam nepieciešama google cloud atslēga
