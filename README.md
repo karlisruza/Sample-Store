@@ -13,4 +13,4 @@ Izmantotās tehnoloģijas
 
 Projektā izmantots yarn package manager un node v10.
 Pēc moduļu instalēšanas jāizpilda 'yarn start' scripts, un atsevišķā termināl=ī jāizpilda node server.js no /src foldera.
-Pats projekts nestrādās, jo git repo nav google cloud atslēgas.
+Projektam nepieciešama google cloud atslēga
